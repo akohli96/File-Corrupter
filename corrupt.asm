@@ -6,7 +6,12 @@
   ;Try to impliment CALL and RETURN
   ;Try to make a better buffer
   ;Beautify the Code
+  ; More efficient buffer?
   
+  ;MOST IMP
+  ;http://docs.cs.up.ac.za/programming/asm/derick_tut/#procedures
+  ;READ ABOVE LINK
+
 ; This is reserved memory  
 section .bss
   buffer : resb 1 ; Reserve one byte
