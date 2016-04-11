@@ -1,8 +1,17 @@
 ;Written by Ayush Kohli and Utsav Dhungel
 
+  ;To Do List: 
+  ;Instead of writing to STDOUT write to file itself
+  ;Create random function to generate ramdom ASCII
+  ;Try to impliment CALL and RETURN
+  ;Try to make a better buffer
+  ;Beautify the Code
+  
+; This is reserved memory  
 section .bss
-  buffer : resb 1
+  buffer : resb 1 ; Reserve one byte
 
+;Store all constants to make code more readable
 section .data
 SYS_EXIT equ 1
 SYS_WRITE equ 4
@@ -14,51 +23,47 @@ SYS_OPEN equ 5
 KERNAL equ 0x80
 
 section .text
-  global _start
+  global _start ; To keep linker happy :)
 
+;Exit Procedure
   exit:
    mov eax, SYS_EXIT
    mov ebx, 0 ; EXIT STATUS FOR SUCESS
    int KERNAL
 
+;
   _start:
-   pop ebx
-   pop ebx
-   pop ebx
-  ; call open
-  jmp open
+   pop ebx ;ARGC Value gets popped off the stack
+   pop ebx ;ARGV[0] gets popped off the stack
+   pop ebx ;ARGV[1] gets popped off the stack
+  jmp open ; goto open
 
-
+;open(argv[1],O-RDWR);
   open:
    mov eax, SYS_OPEN
    mov ecx, READWRITE_MODE
-   int KERNAL
-   test eax,eax
-   jns read
+   int KERNAL ; LINUX magically does its thing
+   test eax,eax ; Dont destroy value of eax because that is the fd
+   jns read ; If there is no error (-1) then go to read
   ; ret
 
+;read(eax,*buff,1)
   read:
-   mov ebx, 3
+   mov ebx, 3 ; Hardcoded fd, ; NEED TO CHANGE
    mov eax, SYS_READ
    mov ecx, buffer
    mov edx, 1
    int KERNAL
-   cmp eax, 0
-   je exit
-   jmp write
+   cmp eax, 0 ; 0 gets returned if read did not return anything
+   je exit ; if eax == 0 exit 
+   jmp write ;else write
 
   write:
-   mov ebx, 1
-   mov eax, SYS_WRITE
-   mov ecx, buffer
-   mov edx, 1
-   int KERNAL
-   jmp read
+   mov ebx, 1 ; FD writing to STDOUT for now
+   mov eax, SYS_WRITE ; Action to perform
+   mov ecx, buffer ;what to write to 
+   mov edx, 1 ; sizeof(buffer)
+   int KERNAL ; Linux does the magic
+   jmp read ; Unconditinal jump to read to continue loop
 
   ;rand: Need to generate random character
-
-  ;To Do List: 
-  ;Instead of writing to STDOUT write to file itself
-  ;Create random function to generate ramdom ASCII
-  ;Try to impliment CALL and RETURN
-  ;Beautify the Code
