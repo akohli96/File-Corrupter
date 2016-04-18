@@ -78,6 +78,12 @@ section .text
   ; jmp write ;else write
 
   write:
+  movzx eax,byte [buffer];
+  push eax
+  call xxx
+  mov [buffer],al
+  ;or byte [buffer], 0x20
+  
    mov ebx, 1 ; FD writing to STDOUT for now
    mov eax, SYS_WRITE ; Action to perform
    ;mov byte [buffer],cl
@@ -86,7 +92,7 @@ section .text
    ;ov dword [buffer + 1], cl
   ; mov byte [buffer],
    mov edx, 1 ; sizeof(buffer)
-   ;xchg ch,cl
+
    int KERNAL ; Linux does the magic
    jmp read ; Unconditinal jump to read to continue loop
 
